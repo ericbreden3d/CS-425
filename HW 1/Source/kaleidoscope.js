@@ -9,8 +9,17 @@
 //
 // ********************************************
 
-var N = 1;
-var angle_max;
+// TODO add instructions to screen
+
+var init_N = 20;
+var rot_speed = 0.1;
+var layers = 1;
+var clamp_low = 0.1;
+var clamp_hi = 0.6;
+
+var init_vals = [];
+var colors = [];
+var vertices = [];
 
 window.onload = function init()
 {
@@ -30,25 +39,25 @@ window.onload = function init()
     // Initialize UI
     var slider = document.getElementById("tri_slider");
     var count_text = document.getElementById("tri count");
-    slider.value = 1;
-    count_text.innerText = "Triangle Count: " + slider.value;
-
+    slider.value = init_N;
+    count_text.innerText = "N: " + slider.value;
+    
     // Funtion to generate vertex and color data, then render to screen
-    var generateAndRender = function() {
+    var generateAndRender = function(N) {
         // update displayed triangle count
-        count_text.innerText = "Triangle Count: " + slider.value;
-        N = slider.value;
-        angle_max = 360 / (2 * N);
+        count_text.innerText = "N: " + N;
+        // N = slider.value;
+        let angle_max = 360 / (2 * N);
 
         // Fill buffers using generateData based on slider value
         // let num_verts = slider.value * 3;
         let vertices = [];
-        let colors = [];
-        vertices.push(vec2(0, -1), vec2(0, 1), vec2(-1, 0), vec2(1, 0));
-        for (let i = 0; i < 4; i++) colors.push(vec3(0, 0, 0));
-        generateData(vertices, colors);
 
-        console.log(vertices);
+        // push verts for coordinate axis lines
+        vertices.push(vec2(0, -1), vec2(0, 1), vec2(-1, 0), vec2(1, 0));
+
+        // 
+        generateData(vertices, colors, N, angle_max);
 
         // Load vertex data into the GPU
         let vPositionBufferId = gl.createBuffer();
@@ -68,38 +77,52 @@ window.onload = function init()
             gl.enableVertexAttribArray(vColor);
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-        render(gl, 2 * N * 3);
+        render(gl, 2 * N * layer * 3);
     }
 
     // Render initial scene and bind to slider input
-    generateAndRender();
-    slider.oninput = generateAndRender;
-    // setInterval(generateAndRender, 30);
+    for (let i = 0; i < 4; i++) colors.push(vec3(0, 0, 0));
+    generateAndRender(slider.value);
+    slider.oninput = () => {
+        init_vals = [];
+        colors = [];
+        for (let i = 0; i < 4; i++) colors.push(vec3(0, 0, 0));
+        generateAndRender(slider.value);
+    }
+    setInterval(() => {
+        generateAndRender(parseInt(slider.value));
+    }, 8);
 };
 
 // Push a randomized position vec2 and color vec3 for each vertex
-function generateData(vertices, colors) {
-    let vals = []
-    for (let i = 0; i < 3; i++) {
-        let val = {
-            r: Math.random(),
-            a: Math.random() * angle_max
+function generateData(vertices, colors, N, angle_max) {
+    if (init_vals.length != 3) {
+        for (let l = 0; l < layers; l++) {
+            for (let i = 0; i < 3; i++) {
+                let val = {
+                    r: Math.random() * (clamp_hi - clamp_low) + clamp_low,
+                    a: Math.random() * (angle_max)
+                }
+                init_vals.push(val);
+            }
         }
-        vals.push(val);
+    } else {
+        for (let i = 0; i < 3; i++) {
+            init_vals[i].a += rot_speed;
+        }
     }
-    console.log(vals);
-    console.log(angle_max);
     for (let i = 0; i < N; i++) {
         for (let j = 0; j < 3; j++) {
-            vertices.push(vec2(polarToRect(vals[j].r, 2 * i * angle_max + vals[j].a)));
-            colors.push(vec3(Math.random()*.6 +.4, Math.random()*.5 +.5, Math.random()*.5+.5));
+            vertices.push(vec2(polarToRect(init_vals[j].r, 2 * i * angle_max + init_vals[j].a)));
+            if (colors.length <= 2 * N * 3 * layer + 4)
+                colors.push(vec3(Math.random()*.6 +.4, Math.random()*.5 +.5, Math.random()*.5+.5));
         }
         for (let j = 0; j < 3; j++) {
-            vertices.push(vec2(polarToRect(vals[j].r, 2 * i * angle_max - vals[j].a)));
-            colors.push(vec3(Math.random()*.6 +.4, Math.random()*.5 +.5, Math.random()*.5+.5));
+            vertices.push(vec2(polarToRect(init_vals[j].r, 2 * i * angle_max - init_vals[j].a)));
+            if (colors.length <= 2 * N * 3 * layer + 4)
+                colors.push(vec3(Math.random()*.6 +.4, Math.random()*.5 +.5, Math.random()*.5+.5));
         }
     }
-    
 }
 
 function polarToRect(r, angle) {
