@@ -15,19 +15,19 @@ main()
 {
     gl_Position = vPosition;
     fColor = vColor;
-
 }
 </script>
 
 <script id="fragment-shader" type="x-shader/x-fragment">
 precision mediump float;
 
+uniform float uColorOffset;
 varying vec3 fColor;
 
 void
 main()
 {
-    gl_FragColor = vec4(fColor, 1);
+    gl_FragColor = vec4(uColorOffset, fColor.yz, 1);
 }
 </script>
 
@@ -37,13 +37,50 @@ main()
 <script type="text/javascript" src="kaleidoscope.js"></script>
 </head>
 
-<body>
-<canvas id="gl-canvas" width="512" height="512">
-Oops ... your browser doesn't support the HTML5 canvas element
-</canvas>
-<div style="margin-left: 60px">
-    <p id="tri count" style="font-size: 25px; margin-bottom: 5px; margin-top: 10px;"></p>
-    <input type="range" style="width: 25%;" min="1" max="100" value="1" class="slider" id="tri_slider">
-</div>
+<body style="background-color: black; margin: 0px;">
+    <h1 style="text-align: center; background-color:rgb(41, 92, 89); color: azure; font-size: 50px; padding: 10px; margin: 0px; margin-bottom: 35px;">
+        Kaleidoscope
+    </h1>
+
+    <div style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;">
+
+        <canvas id="gl-canvas" width="512" height="512" style=
+            "border: 7px solid rgb(123, 194, 218);
+            border-radius: 360px;"
+        >
+        Oops ... your browser doesn't support the HTML5 canvas element
+        </canvas>
+        <div style=
+            "margin-bottom: 50px;
+            margin-top: 35px;
+            background-color: rgb(41, 92, 89);
+            color: white;
+            padding: 15px;
+            width: 30%;
+            border-radius: 20px;">
+            <p id="tri count" style="font-size: 25px; margin-bottom: 5px; margin-top: 10px;"></p>
+            <input type="range" style="width: 75%;" min="1" max="100" value="1" class="slider" id="tri_slider">
+            <p id="layer count" style="font-size: 25px; margin-bottom: 5px; margin-top: 10px;"></p>
+            <input type="range" style="width: 75%;" min="1" max="100" value="1" class="slider" id="layer_slider">
+            <p id="angle mult" style="font-size: 25px; margin-bottom: 5px; margin-top: 10px;"></p>
+            <input type="range" style="width: 75%;" min="1" max="100" value="1" class="slider" id="angle_slider">
+        </div>
+    </div>
+    <div style="padding: 40px; color: white; background-color:rgb(41, 92, 89);">
+        <h2 style="margin: 0px; ">Documentation:</h2>
+        <p style="margin-top: 5px; font-size: 17px;">
+            Use sliders to adjust kaleidoiscope parameters. Each parameter change will result in generation of
+            new randomized triangle points that will be mirrored to form the kaleidoscope.
+        </p>
+        <h3 style="margin: 0px; ">Parameters:</h3>
+        <p style="margin-top: 5px; font-size: 17px;">
+            N: the number of angular subdivisions to mirror around<br>
+            Layers: the number of radial subdivisions to generate (each layer has its own randomized values)<br>
+            Angle Mult: multiplier applied to point angle values for fun!
+        </p>
+    </div>
 </body>
 </html>
