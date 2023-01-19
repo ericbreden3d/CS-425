@@ -49,6 +49,7 @@ window.onload = function init()
     for (let i = 0; i < 4; i++) colors.push(vec3(0, 0, 0));
     generateAndRender(slider.value, l_slider.value);
 
+    // slider functionality
     slider.oninput = () => {
         count_text.innerText = "N: " + slider.value;
         init_vals = [];
@@ -56,7 +57,6 @@ window.onload = function init()
         for (let i = 0; i < 4; i++) colors.push(vec3(0, 0, 0));
         generateAndRender(slider.value, l_slider.value);
     }
-
     l_slider.oninput = () => {
         l_text.innerText = "Layers: " + l_slider.value;
         init_vals = [];
@@ -64,7 +64,6 @@ window.onload = function init()
         for (let i = 0; i < 4; i++) colors.push(vec3(0, 0, 0));
         generateAndRender(slider.value, l_slider.value);
     }
-
     ang_slider.oninput = () => {
         ang_text.innerText = "Angle Mult: " + ang_slider.value;
         init_vals = [];
@@ -73,9 +72,10 @@ window.onload = function init()
         generateAndRender(slider.value, l_slider.value, ang_slider);
     }
 
+    // generate and render new animation frame every 10 ms
     setInterval(() => {
         generateAndRender(slider.value, l_slider.value);
-    }, 8);
+    }, 10);
 };
 
 
@@ -110,21 +110,22 @@ var generateAndRender = function(N, layers) {
         gl.enableVertexAttribArray(vColor);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
-    // pass time
+    // pass color offset as uniform
     var uColorOffset = gl.getUniformLocation(program, "uColorOffset");
     cur_col_offset = gl.getUniform(program, uColorOffset);
     if (cur_col_offset > 1 || cur_col_offset < 0) {
         color_speed = -color_speed;
     }
     gl.uniform1f(uColorOffset, cur_col_offset + color_speed);
-    console.log(cur_col_offset);
 
     render(2 * N * layers * 3);
 }
 
 
-// Push a randomized position vec2 and color vec3 for each vertex
+// Generate kaleidoscope vertex and color data
 function generateData(vertices, colors, N, angle_max, layers) {
+    // generate initial randomized radius and angle values for vertices.
+    // if no parameter change, then animate rotation
     let l_size = 1 / layers;
     if (init_vals.length != 3 * layers) {
         for (let l = 0; l < layers; l++) {
@@ -143,6 +144,9 @@ function generateData(vertices, colors, N, angle_max, layers) {
             init_vals[i].a += rot_speed;
         }
     }
+
+    // convert to rectangular coordinates and push initial and mirrored
+    // vertices and randomized vertex colors
     for (let i = 0; i < N; i++) {
         for (let j = 0; j < 3 * layers; j++) {
             vertices.push(vec2(polarToRect(init_vals[j].r, 2 * i * angle_max + init_vals[j].a)));
@@ -152,7 +156,7 @@ function generateData(vertices, colors, N, angle_max, layers) {
         for (let j = 0; j < 3 * layers; j++) {
             vertices.push(polarToRect(init_vals[j].r, 2 * (i + 1) * angle_max - init_vals[j].a));
             if (colors.length <= 2 * N * 3 * layers + 4)
-            colors.push(vec3(Math.random()*.7 +.3, Math.random()*.7 +.3, Math.random()*.7+.3));
+                colors.push(vec3(Math.random()*.7 +.3, Math.random()*.7 +.3, Math.random()*.7+.3));
         }
     }
 }
