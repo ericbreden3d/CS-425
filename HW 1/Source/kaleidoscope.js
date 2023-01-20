@@ -6,7 +6,7 @@
 
 var init_N = 4;
 var rot_speed = 0.1;
-var angle_mult = 2;
+var angle_mult = 1;
 var color_speed = 0.00155;
 
 var gl;
@@ -25,7 +25,7 @@ window.onload = function init()
     
     //  Configure WebGL
     gl.viewport( 0, 0, canvas.width, canvas.height );
-    gl.clearColor( 0.0,0.06,0.06, 1.0 );
+    gl.clearColor( 0.0,0.08,0.08, 1.0 );
     
     //  Load shaders and initialize attribute buffers
     program = initShaders( gl, "vertex-shader", "fragment-shader" );
