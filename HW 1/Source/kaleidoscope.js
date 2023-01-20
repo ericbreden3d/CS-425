@@ -6,7 +6,6 @@
 
 var init_N = 4;
 var rot_speed = 0.1;
-var angle_mult = 1;
 var color_speed = 0.00155;
 
 var gl;
@@ -47,7 +46,7 @@ window.onload = function init()
 
     // Render initial scene and bind to slider input
     for (let i = 0; i < 4; i++) colors.push(vec3(0, 0, 0));
-    generateAndRender(slider.value, l_slider.value);
+    generateAndRender(slider.value, l_slider.value, ang_slider.value);
 
     // slider functionality
     slider.oninput = () => {
@@ -55,32 +54,32 @@ window.onload = function init()
         init_vals = [];
         colors = [];
         for (let i = 0; i < 4; i++) colors.push(vec3(0, 0, 0));
-        generateAndRender(slider.value, l_slider.value);
+        generateAndRender(slider.value, l_slider.value, ang_slider.value);
     }
     l_slider.oninput = () => {
         l_text.innerText = "Layers: " + l_slider.value;
         init_vals = [];
         colors = [];
         for (let i = 0; i < 4; i++) colors.push(vec3(0, 0, 0));
-        generateAndRender(slider.value, l_slider.value);
+        generateAndRender(slider.value, l_slider.value, ang_slider.value);
     }
     ang_slider.oninput = () => {
         ang_text.innerText = "Angle Mult: " + ang_slider.value;
         init_vals = [];
         colors = [];
         for (let i = 0; i < 4; i++) colors.push(vec3(0, 0, 0));
-        generateAndRender(slider.value, l_slider.value, ang_slider);
+        generateAndRender(slider.value, l_slider.value, ang_slider.value);
     }
 
     // generate and render new animation frame every 10 ms
     setInterval(() => {
-        generateAndRender(slider.value, l_slider.value);
+        generateAndRender(slider.value, l_slider.value, ang_slider.value);
     }, 10);
 };
 
 
 // Funtion to generate vertex and color data, then render to screen
-var generateAndRender = function(N, layers) {
+var generateAndRender = function(N, layers, angle_mult) {
     let angle_max = 360 / (2 * N);
 
     // Fill buffers using generateData based on slider value
@@ -90,7 +89,7 @@ var generateAndRender = function(N, layers) {
     vertices.push(vec2(0, -1), vec2(0, 1), vec2(-1, 0), vec2(1, 0));
 
     // generate initial data and animate on subsequent calls
-    generateData(vertices, colors, N, angle_max,layers);
+    generateData(vertices, colors, N, angle_max, layers, angle_mult);
 
     // Load vertex data into the GPU
     let vPositionBufferId = gl.createBuffer();
@@ -123,7 +122,7 @@ var generateAndRender = function(N, layers) {
 
 
 // Generate kaleidoscope vertex and color data
-function generateData(vertices, colors, N, angle_max, layers) {
+function generateData(vertices, colors, N, angle_max, layers, angle_mult) {
     // generate initial randomized radius and angle values for vertices.
     // if no parameter change, then animate rotation
     let l_size = 1 / layers;
