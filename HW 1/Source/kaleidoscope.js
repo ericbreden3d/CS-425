@@ -9,7 +9,7 @@ var rot_speed = 0.1;
 var color_speed = 0.00155;
 
 var gl;
-var program
+var program;
 var init_vals = [];
 var colors = [];
 var vertices = [];
