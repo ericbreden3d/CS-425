@@ -1,5 +1,6 @@
 // ********************************************
 // Assignment: HW 1 Kaleidoscope
+// Decription: see on-screen documentation
 // Name: Eric Breden
 // NetID: ebrede2
 // ********************************************
