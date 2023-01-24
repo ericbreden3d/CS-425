@@ -5,7 +5,7 @@
 // ********************************************
 
 var init_N = 4;
-var rot_speed = 0.9;
+var rot_speed = 0.1;
 var color_speed = 0.00155;
 
 var gl;
