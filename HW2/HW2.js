@@ -6,48 +6,69 @@ window.onload = function init() {
  
 
 function generate_scene(gl, program) {
-    console.log(typeof(vec2()))
-    
     // model transform
-    let uModelXform = mat4();s
+    let uModelXform = mat4();
     let uLoc_model = gl.getUniformLocation(program, "uModelXform");
     gl.uniformMatrix4fv(uLoc_model, false, flatten(uModelXform));
     
     let eye = vec3(0, .7, 3);
     let at = vec3(0, 0, 0);
+    let atDir = normalize(subtract(at, eye)); 
+    let fDir = vec3(atDir[0], 0, atDir[2]);
+
+    let rot_offset = 0;
 
     // initial view
     set_view(gl, program, eye, at);
 
     // input handler
     document.onkeydown = (e) => {
-        let atDir = normalize(subtract(at, eye)); 
-        let fDir = vec3(atDir[0], 0, atDir[2]);
         if (e.key == "w" || e.key == "W") {
-            let atDir = normalize(subtract(at, eye)); 
-            let fDir = vec3(atDir[0], 0, atDir[2]);
-            atDir[1] = 0;
-            eye = add(eye, scale(0.02, fDir));
+            eye = add(eye, scale(0.05, fDir));
             at = add(eye, atDir);
-            console.log(eye, at);
+            atDir = normalize(subtract(at, eye)); 
+            fDir = vec3(atDir[0], 0, atDir[2]); 
             set_view(gl, program, eye, at);
         } else if (e.key == "s" || e.key == "S") {
-            atDir[1] = 0;
-            eye = subtract(eye, scale(0.02, fDir));
+            eye = subtract(eye, scale(0.05, fDir));
             at = add(eye, atDir);
-            console.log(eye, at);
             set_view(gl, program, eye, at);
         } else if (e.key == "a" || e.key == "A") {
-
+            atDir = normalize(subtract(at, eye));
+            atDir.push(0);
+            atMat = mat4(
+                vec4(atDir[0]), 
+                vec4(atDir[1]), 
+                vec4(atDir[2]), 
+                vec4()
+            );
+            atMat = mult(rotateY(1), atMat);
+            atDir = vec3(atMat[0][0], atMat[1][0], atMat[2][0]);
+            fDir = vec3(atDir[0], 0, atDir[2]);
+            at = add(eye, atDir);
+            set_view(gl, program, eye, at, mat4());
         } else if (e.key == "d" || e.key == "D") {
-
+            atDir = normalize(subtract(at, eye));
+            atDir.push(0);
+            atMat = mat4(
+                vec4(atDir[0], 0, 0, 0), 
+                vec4(atDir[1], 0, 0, 0), 
+                vec4(atDir[2], 0, 0, 0), 
+                vec4(0, 0, 0, 0)
+            );
+            atMat = mult(rotateY(-1), atMat);
+            atDir = vec3(atMat[0][0], atMat[1][0], atMat[2][0]);
+            fDir = vec3(atDir[0], 0, atDir[2]);
+            at = add(eye, atDir);
+            set_view(gl, program, eye, at, mat4());
         }
-
     }
     
     // render merry go round
     let mgr = new MerryGoRound(gl, 6);
     mgr.play_animation(gl, program, translate(0, 0, 0));
+    // let mgr2 = new MerryGoRound(gl, 6);
+    // mgr2.play_animation(gl, program, translate(0, 0, 0));
 }
 
 function set_view(gl, program, eye, at) {
