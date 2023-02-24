@@ -1,12 +1,8 @@
-/* coneClass.js
-	
-	Written by John Bell for CS 425, Fall 2020
-    
-    This file contains code to create and draw a unit cone, centered at the origin.
-    
-*/
-
-// Globals are evil.  We won't use any here. :-)
+/*********************************
+Assignment 2: Merry Go 'Round
+Author: Eric Breden
+NetID: ebrede2
+*********************************/
 
 class Horse { 
 	constructor(gl, xForm = mat4()) {

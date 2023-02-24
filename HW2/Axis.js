@@ -1,3 +1,9 @@
+/*********************************
+Assignment 2: Merry Go 'Round
+Author: Eric Breden
+NetID: ebrede2
+*********************************/
+
 class Axis {
     constructor(gl) {
         let points = [

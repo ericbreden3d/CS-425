@@ -1,10 +1,8 @@
-<!--coneExercise.html
-
-	Written Fall 2020 by John Bell for CS 425
-    Last revised Spring 2023 by John Bell
-    
-    This file uses the Cone class
- -->
+<!-----------------------------
+Assignment 2: Merry Go 'Round
+Author: Eric Breden
+NetID: ebrede2
+ ------------------------------>
 
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -45,18 +43,6 @@
 		
 		// Pass-throughs to fragment shader
 		fColor = vec4( vColor, 1 );
-		
-		// Minimal functionality passes through position and ends.
-		gl_Position = vec4( vPosition, 1.0 );
-	
-		// TODO 2 - Apply the Model  transformation alone
-		// gl_Position = uModelXform * vec4( vPosition, 1.0 );
-		
-		// TODO 3 / Apply Model and View transformations
-		// gl_Position = uViewXform * uModelXform * vec4( vPosition, 1.0 );
-		
-		// TODO 4 - Add in the projection transformation
-	    // gl_Position = uProjection * uViewXform * uModelXform * vec4( vPosition, 1.0 );
 
         gl_Position = uProjection * uViewXform * uModelXform * vec4( vPosition, 1.0 );
 		
@@ -78,12 +64,7 @@
 	// None needed for a simple shader.
 
 	void main( ) {
-		
-		// The simplest fragment shader picks a solid color
-		// gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 ); // Red
-		
-		// Next simplest uses the color passed through from the vertex shader 
-		// ( or from a uniform variable. )
+
 		gl_FragColor = fColor;
 			
 		return;
@@ -96,17 +77,38 @@
 
 <!-- End of all the scripts.  Now here is the actual web page -->
 
-<body>
-<h3 align="center">Lab Exercise Program Using the Cone Class<br />
-John Bell - 
-Fall 2020 - 
-CS 425</h3>
+<body style="background-color: black">
+<h3 style="color: white;" align="center">Assignment #2: Merry Go 'Round<br />
+Eric Breden - 
+Spring 2023 -
+ebrede2 -
+CS 425<br></h3>
 <p></p>
 
-<div style="display: flex; justify-content: center; margin-top: 45px;">
-<canvas id="gl-canvas" width="720" height="720">
-  Ooops No Canvas Found
-</canvas>
+<div style="padding-bottom: 0px; display: flex; flex-direction: column; justify-content: center; margin-top: 45px; margin-right: 35%; margin-left: 35%; margin-bottom: 0px;">
+	<canvas id="gl-canvas" width="1080" height="1080">
+	Ooops No Canvas Found
+	</canvas>
+	<div id="help-box" style="max-height: 100px;">
+		<div style="display: flex; justify-content: center; background-color: rgb(186, 218, 246); margin-left: 20%; margin-right: 20%; position: relative; bottom: 80px;">
+			<p id="help-text" style="color: black">- Move Forward/Back: W/D<br>- Rotate Left/Right: A/D<br>- Reset Camera: R<br>- Play/Pause: Space<br>- Help: H<br>- Quit: Q</p>
+		</div>
+	</div>
 </div>
+
+<div style="margin-left: 30%; margin-right: 30%; margin-bottom: 30px;">
+	<p style="color: white; margin-top: 0px;">
+		This program uses the compound transformation methods discussed in lecture to render
+		a Merry Go 'Round using multiple JS classes that utilize the base primitive class, TruncatedCone,
+		which carries out communication with the GPU.
+		<br><br>
+		I have implemented the basic input requirements laid out in the assignment PDF in addition to
+		a pause/play feature that is possible by maintaining the current time offsets for rotation and
+		the vertical movement of the horses within the MerryGoRound class. 
+		<br><br>
+		Please press H for a list of all input commands.
+	</p>
+</div>
+
 </body>
 </html>

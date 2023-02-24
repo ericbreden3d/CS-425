@@ -1,3 +1,9 @@
+/*********************************
+Assignment 2: Merry Go 'Round
+Author: Eric Breden
+NetID: ebrede2
+*********************************/
+
 class MerryGoRound {
     constructor(gl, numHorses) {
         this.numHorses = numHorses;
@@ -7,19 +13,16 @@ class MerryGoRound {
             new TruncatedCone(gl, 16, 0, 0)
         ]
         this.cylinder = new TruncatedCone(gl, 16, 1, 0);
+        this.time = 0;
     }
 
     // starts animation
     play_animation(gl, program, translation) {
-        let axes = new Axis(gl);
+        this.interval_id = setInterval(() => {
+            gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
 
-        setInterval(() => {
-            // gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
-
-            // render axes for debug
-            // axes.render(gl, program);
-
-            let uCombinedXform = mult(translation, rotateY(new Date().getTime() * 0.075));
+            // calculate rotation and outer translation and pass to render() 
+            let uCombinedXform = mult(translation, rotateY(this.time += 2));
             this.render(gl, program, uCombinedXform);
         }, 50)
     }
@@ -53,7 +56,7 @@ class MerryGoRound {
 
             // calculate height using time and sine
             // offset by i to make "wave" and invert every other
-            let hOffset = Math.sin(new Date().getTime() * 0.0025 + i) * 0.15;
+            let hOffset = Math.sin(this.time * 0.075 + i) * 0.15;
             if (i % 2 == 1) {
                 hOffset *= -1;
             }
